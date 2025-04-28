@@ -4,10 +4,10 @@
 
 #
 # This file was created with the following call:
-#   .Call("wrap__make_astrs_wrappers", use_symbols = TRUE, package_name = "astrs")
+#   .Call("wrap__make_cosmo_wrappers", use_symbols = TRUE, package_name = "cosmo")
 
 #' @usage NULL
-#' @useDynLib astrs, .registration = TRUE
+#' @useDynLib cosmo, .registration = TRUE
 NULL
 
 #' Comoving distance.

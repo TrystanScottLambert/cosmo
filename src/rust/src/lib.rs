@@ -115,11 +115,12 @@ fn comoving_volumes(redshifts: Vec<f64>, omega_m: f64, omega_k: f64, omega_l: f6
         .collect()
 }
 
+
 // Macro to generate exports.
 // This ensures exported functions are registered with R.
 // See corresponding C code in `entrypoint.c`.
 extendr_module! {
-    mod astrs;
+    mod cosmo;
     fn comoving_distance;
     fn comoving_distances;
     fn comoving_volume;
