@@ -12,3 +12,4 @@ extendr-api = '*'
 integrate = "0.1.11"
 libm = "0.2.13"
 rayon = "1.10.0"
+roots = "0.0.8"

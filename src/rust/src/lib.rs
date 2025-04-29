@@ -3,6 +3,8 @@ use rayon::prelude::*;
 use integrate::adaptive_quadrature;
 use libm::{sin, sinh, log10, asinh};
 use std::f64::{self, consts::PI};
+use roots::SimpleConvergency;
+use roots::find_root_brent;
 
 const SPEED_OF_LIGHT: f64 = 299_792.458; // km/s
 
@@ -115,6 +117,70 @@ fn comoving_volumes(redshifts: Vec<f64>, omega_m: f64, omega_k: f64, omega_l: f6
         .collect()
 }
 
+/// look back time
+/// @export
+#[extendr]
+fn look_back_time(redshift: f64, omega_m:f64, omega_k: f64, omega_l: f64, h0: f64) -> f64 {
+    // in Gyr
+    let tolerance = 10.0e-9;
+    let min_h = 10.0e-15;
+    let f = |z:f64| 1./(e_func(z, omega_m, omega_k, omega_l) * (1.+z));
+    let integral = adaptive_quadrature::adaptive_simpson_method(f, 0.0, redshift, min_h, tolerance)
+        .expect("Value too close to zero. Must be within 10e-8");
+    ((3.08568025e19/(h0*31556926.))/1e9) * integral
+}
+
+/// Universe age at z=0
+/// @export
+#[extendr]
+fn universe_age_now(omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f64 {
+    // in Gyr
+    let tolerance = 10.0e-9;
+    let min_h = 10.0e-15;
+    let f = |z:f64| 1./(e_func(z, omega_m, omega_k, omega_l) * (1.+z));
+    let integral = adaptive_quadrature::adaptive_simpson_method(f, 0.0, 1200. , min_h, tolerance)
+        .expect("Value too close to zero. Must be within 10e-8");
+    ((3.08568025e19/(h0*31556926.))/1e9) * integral
+}
+
+/// Unviverse age at a particular redshift in Gyr
+/// @export
+#[extendr]
+fn universe_age(redshift: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f64 {
+    universe_age_now(omega_m, omega_k, omega_l, h0) - look_back_time(redshift, omega_m, omega_k, omega_l, h0)
+}
+
+
+/// Universe ages at multiple redshifts
+/// @export
+#[extendr]
+fn universe_ages(redshifts: Vec<f64>, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> Vec<f64> {
+    redshifts
+        .par_iter()
+        .map(|z| universe_age(*z, omega_m, omega_l, omega_k, h0))
+        .collect()
+}
+
+/// age in Gyr at some given z
+/// @export
+#[extendr]
+fn inverse_age(age: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f64 {
+    //TODO: Solve this 0 problem issue.
+    let age_now = universe_age_now(omega_m, omega_k, omega_l, h0);
+    let f = |z: f64| {universe_age(z, omega_m, omega_k, omega_l, h0) - age};
+    let mut convergency = SimpleConvergency {eps:1e-5f64, max_iter: 30};
+    find_root_brent(1e-7, age_now, &f, &mut convergency).expect("Age older than current age of universe")
+}
+
+/// age in Gyr at given z values
+/// @export
+#[extendr]
+fn inverse_ages(ages: Vec<f64>, omega_m:f64, omega_k:f64, omega_l:f64, h0:f64) -> Vec<f64> {
+    ages
+        .par_iter()
+        .map(|a| inverse_age(*a, omega_m, omega_k, omega_l, h0))
+        .collect()
+}
 
 // Macro to generate exports.
 // This ensures exported functions are registered with R.
@@ -129,4 +195,10 @@ extendr_module! {
     fn comoving_transverse_distances;
     fn dist_mod;
     fn dist_mods;
+    fn look_back_time;
+    fn universe_age_now;
+    fn universe_age;
+    fn universe_ages;
+    fn inverse_age;
+    fn inverse_ages;
 }

@@ -42,5 +42,29 @@ dist_mod <- function(redshift, omega_m, omega_k, omega_l, h0) .Call(wrap__dist_m
 #' @export
 dist_mods <- function(redshifts, omega_m, omega_k, omega_l, h0) .Call(wrap__dist_mods, redshifts, omega_m, omega_k, omega_l, h0)
 
+#' look back time
+#' @export
+look_back_time <- function(redshift, omega_m, omega_k, omega_l, h0) .Call(wrap__look_back_time, redshift, omega_m, omega_k, omega_l, h0)
+
+#' Universe age at z=0
+#' @export
+universe_age_now <- function(omega_m, omega_k, omega_l, h0) .Call(wrap__universe_age_now, omega_m, omega_k, omega_l, h0)
+
+#' Unviverse age at a particular redshift in Gyr
+#' @export
+universe_age <- function(redshift, omega_m, omega_k, omega_l, h0) .Call(wrap__universe_age, redshift, omega_m, omega_k, omega_l, h0)
+
+#' Universe ages at multiple redshifts
+#' @export
+universe_ages <- function(redshifts, omega_m, omega_k, omega_l, h0) .Call(wrap__universe_ages, redshifts, omega_m, omega_k, omega_l, h0)
+
+#' age in Gyr at some given z
+#' @export
+inverse_age <- function(age, omega_m, omega_k, omega_l, h0) .Call(wrap__inverse_age, age, omega_m, omega_k, omega_l, h0)
+
+#' age in Gyr at given z values
+#' @export
+inverse_ages <- function(ages, omega_m, omega_k, omega_l, h0) .Call(wrap__inverse_ages, ages, omega_m, omega_k, omega_l, h0)
+
 
 # nolint end
