@@ -20,3 +20,11 @@ co_vol <- function(redshift, o_m, o_k, o_l, h_0) {
 distance_mod <- function(redshift, o_m, o_k, o_l, h_0) {
     .do_for_all(dist_mods, dist_mod, redshift, o_m, o_k, o_l, h_0)
 }
+
+z_at <- function(cosmo_function, value, omega_m, omega_k, omega_l, h0) {
+    all_z = seq(0, 1500, length.out = 1000000)
+    all_val = cosmo_function(all_z, omega_m, omega_k, omega_l, h0)
+    .func = approxfun(all_val, all_z)
+    return(.func(value))
+}
+
