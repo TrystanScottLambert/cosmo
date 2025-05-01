@@ -124,9 +124,12 @@ fn look_back_time(redshift: f64, omega_m:f64, omega_k: f64, omega_l: f64, h0: f6
     // in Gyr
     let tolerance = 10.0e-9;
     let min_h = 10.0e-15;
+    if redshift <= min_h {
+        return 0.;
+    }
     let f = |z:f64| 1./(e_func(z, omega_m, omega_k, omega_l) * (1.+z));
     let integral = adaptive_quadrature::adaptive_simpson_method(f, 0.0, redshift, min_h, tolerance)
-        .expect("Value too close to zero. Must be within 10e-8");
+        .expect("Failure in Lookback Time");
     ((3.08568025e19/(h0*31556926.))/1e9) * integral
 }
 
@@ -165,11 +168,21 @@ fn universe_ages(redshifts: Vec<f64>, omega_m: f64, omega_k: f64, omega_l: f64, 
 /// @export
 #[extendr]
 fn inverse_age(age: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f64 {
-    //TODO: Solve this 0 problem issue.
     let age_now = universe_age_now(omega_m, omega_k, omega_l, h0);
+    if age > age_now {
+        panic!("Age is older than the current age of the universe.")
+    }
+
+    if age < 0. {
+        panic!("Can't pass a negative age.")
+    }
+
     let f = |z: f64| {universe_age(z, omega_m, omega_k, omega_l, h0) - age};
     let mut convergency = SimpleConvergency {eps:1e-5f64, max_iter: 30};
-    find_root_brent(1e-7, age_now, &f, &mut convergency).expect("Age older than current age of universe")
+    match find_root_brent(1e-9, 1500., &f, &mut convergency) {
+        Ok(t) => t,
+        Err(_error) => 0.0
+    }
 }
 
 /// age in Gyr at given z values
