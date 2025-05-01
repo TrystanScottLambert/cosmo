@@ -190,7 +190,7 @@ fn inverse_age(age: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f
 #[extendr]
 fn inverse_ages(ages: Vec<f64>, omega_m:f64, omega_k:f64, omega_l:f64, h0:f64) -> Vec<f64> {
     ages
-        .par()
+        .iter()
         .map(|a| inverse_age(*a, omega_m, omega_k, omega_l, h0))
         .collect()
 }
