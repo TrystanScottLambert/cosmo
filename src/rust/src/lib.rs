@@ -160,7 +160,7 @@ fn universe_age(redshift: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64
 fn universe_ages(redshifts: Vec<f64>, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> Vec<f64> {
     redshifts
         .par_iter()
-        .map(|z| universe_age(*z, omega_m, omega_l, omega_k, h0))
+        .map(|z| universe_age(*z, omega_m, omega_k, omega_l, h0))
         .collect()
 }
 
@@ -190,7 +190,7 @@ fn inverse_age(age: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f
 #[extendr]
 fn inverse_ages(ages: Vec<f64>, omega_m:f64, omega_k:f64, omega_l:f64, h0:f64) -> Vec<f64> {
     ages
-        .iter()
+        .par_iter()
         .map(|a| inverse_age(*a, omega_m, omega_k, omega_l, h0))
         .collect()
 }
