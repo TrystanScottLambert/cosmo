@@ -197,7 +197,7 @@ fn inverse_age(age: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f
     }
 
     let f = |z: f64| {universe_age(z, omega_m, omega_k, omega_l, h0) - age};
-    let mut convergency = SimpleConvergency {eps:1e-5f64, max_iter: 30};
+    let mut convergency = SimpleConvergency {eps:1e-8f64, max_iter: 30};
     match find_root_brent(1e-9, 1500., &f, &mut convergency) {
         Ok(t) => t,
         Err(_error) => 0.0
