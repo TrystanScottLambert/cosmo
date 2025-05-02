@@ -7,9 +7,17 @@
 z_at(cosmo_function, value, omega_m, omega_k, omega_l, h0)
 }
 \arguments{
+\item{cosmo_function}{The cosmological function to inverse}
+
 \item{value}{The value of the function that you wan't to find the redshift for}
 
-\item{como_function}{The cosmological function to inverse}
+\item{omega_m}{Mass density (often 0.3 in LCDM)}
+
+\item{omega_k}{Effective mass density of relativistic particles (often 0. in LCDM)}
+
+\item{omega_l}{Effective mass density of dark energy (often 0.7 in LCDM)}
+
+\item{h_0}{H0 = 100 * h}
 }
 \value{
 The redshift at the given value

@@ -10,11 +10,23 @@
 #' @useDynLib cosmo, .registration = TRUE
 NULL
 
-#' Comoving distance.
+#' Calculates the comoving distance for a single redshift value.
+#' @param z single redshift value.
+#' @param omega_m Mass density (often 0.3 in LCDM)
+#' @param omega_k Effective mass density of relativistic particles (often 0. in LCDM)
+#' @param omega_l Effective mass density of dark energy (often 0.7 in LCDM)
+#' @param hubble_constant H0 = 100 * h
+#' @return a single comoving distance in Mpc.
 #' @export
 comoving_distance <- function(redshift, omega_m, omega_k, omega_l, h0) .Call(wrap__comoving_distance, redshift, omega_m, omega_k, omega_l, h0)
 
-#' Comoving distance.
+#' Calculates multiple comoving distances for multiple redshifts.
+#' @param redshift_array an array of multiple redshift values.
+#' @param omega_m Mass density (often 0.3 in LCDM)
+#' @param omega_k Effective mass density of relativistic particles (often 0. in LCDM)
+#' @param omega_l Effective mass density of dark energy (often 0.7 in LCDM)
+#' @param hubble_constant H0 = 100 * h
+#' @return multiple comoving distance in Mpc.
 #' @export
 comoving_distances <- function(redshift_array, omega_m, omega_k, omega_l, h0) .Call(wrap__comoving_distances, redshift_array, omega_m, omega_k, omega_l, h0)
 

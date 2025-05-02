@@ -2,10 +2,24 @@
 % Please edit documentation in R/extendr-wrappers.R
 \name{comoving_distance}
 \alias{comoving_distance}
-\title{Comoving distance.}
+\title{Calculates the comoving distance for a single redshift value.}
 \usage{
 comoving_distance(redshift, omega_m, omega_k, omega_l, h0)
 }
+\arguments{
+\item{omega_m}{Mass density (often 0.3 in LCDM)}
+
+\item{omega_k}{Effective mass density of relativistic particles (often 0. in LCDM)}
+
+\item{omega_l}{Effective mass density of dark energy (often 0.7 in LCDM)}
+
+\item{z}{single redshift value.}
+
+\item{hubble_constant}{H0 = 100 * h}
+}
+\value{
+a single comoving distance in Mpc.
+}
 \description{
-Comoving distance.
+Calculates the comoving distance for a single redshift value.
 }

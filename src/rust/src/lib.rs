@@ -8,21 +8,34 @@ use roots::find_root_brent;
 
 const SPEED_OF_LIGHT: f64 = 299_792.458; // km/s
 
-/// e func that is integrated often.
+/// Evaluates the E(z) function often used in determining other cosmological functions.
+/// @param z single redshift value.
+/// @param omega_m Mass density (often 0.3 in LCDM)
+/// @param omega_k Effective mass density of relativistic particles (often 0. in LCDM)
+/// @param omega_l Effective mass density of dark energy (often 0.7 in LCDM)
+/// @return E(z)
 /// @export
 #[extendr]
 fn e_func(z: f64, omega_m: f64, omega_k: f64, omega_l: f64) -> f64 {
     (omega_m * (1.0 + z).powi(3) + omega_k * (1.0 + z).powi(2) + omega_l).sqrt()
 }
 
-/// Hubble Distance.
+/// Hubble time multiplied by the speed of light.
+/// @param hubble_constant H0 = 100 * h
+/// @return c/hubble_constant
 /// @export
 #[extendr]
 fn hubble_distance(hubble_constant: f64) -> f64 {
     SPEED_OF_LIGHT/hubble_constant
 }
 
-/// Comoving distance.
+/// Calculates the comoving distance for a single redshift value.
+/// @param z single redshift value.
+/// @param omega_m Mass density (often 0.3 in LCDM)
+/// @param omega_k Effective mass density of relativistic particles (often 0. in LCDM)
+/// @param omega_l Effective mass density of dark energy (often 0.7 in LCDM)
+/// @param hubble_constant H0 = 100 * h
+/// @return a single comoving distance in Mpc.
 /// @export
 #[extendr]
 fn comoving_distance(redshift: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f64 {
@@ -37,7 +50,13 @@ fn comoving_distance(redshift: f64, omega_m: f64, omega_k: f64, omega_l: f64, h0
     hubble_distance(h0) * cosmo_recession_velocity
 }
 
-/// Comoving distance.
+/// Calculates multiple comoving distances for multiple redshifts.
+/// @param redshift_array an array of multiple redshift values.
+/// @param omega_m Mass density (often 0.3 in LCDM)
+/// @param omega_k Effective mass density of relativistic particles (often 0. in LCDM)
+/// @param omega_l Effective mass density of dark energy (often 0.7 in LCDM)
+/// @param hubble_constant H0 = 100 * h
+/// @return multiple comoving distance in Mpc.
 /// @export
 #[extendr]
 fn comoving_distances(redshift_array: Vec<f64>, omega_m:f64, omega_k:f64, omega_l:f64, h0: f64) -> Vec<f64> {
@@ -122,8 +141,8 @@ fn comoving_volumes(redshifts: Vec<f64>, omega_m: f64, omega_k: f64, omega_l: f6
 #[extendr]
 fn look_back_time(redshift: f64, omega_m:f64, omega_k: f64, omega_l: f64, h0: f64) -> f64 {
     // in Gyr
-    let tolerance = 10.0e-9;
-    let min_h = 10.0e-15;
+    let tolerance = 10.0e-8;
+    let min_h = 10.0e-11;
     if redshift <= min_h {
         return 0.;
     }
@@ -138,8 +157,8 @@ fn look_back_time(redshift: f64, omega_m:f64, omega_k: f64, omega_l: f64, h0: f6
 #[extendr]
 fn universe_age_now(omega_m: f64, omega_k: f64, omega_l: f64, h0: f64) -> f64 {
     // in Gyr
-    let tolerance = 10.0e-9;
-    let min_h = 10.0e-15;
+    let tolerance = 10.0e-8;
+    let min_h = 10.0e-11;
     let f = |z:f64| 1./(e_func(z, omega_m, omega_k, omega_l) * (1.+z));
     let integral = adaptive_quadrature::adaptive_simpson_method(f, 0.0, 1200. , min_h, tolerance)
         .expect("Value too close to zero. Must be within 10e-8");
