@@ -34,12 +34,13 @@ _At the moment `cosmo` is built for flat cosmologies and will raise an error for
 For most use-cases, `cosmo all <z>` will be sufficient. This returns a summary representation of the most common cosmological properties at a given redshift <z>
 
 ```bash
-cosmo all 0.3
+cosmo all 1
 ```
 
 This will also show additional values which haven't been included as an official sub-command.
 
 ![all_example](./.github/all_example.png)
+
 
 
 ### Co-moving distance
@@ -140,7 +141,7 @@ The binary for `cosmo` is only available on mac-os but will be made available on
 **Installing dog is very easy**
 
 ```
-curl -L -o dog https://github.com/trystanscottlambert/cosmo/releases/download/v1.0.0/cosmo-macos-x86_64
+curl -L -o dog https://github.com/trystanscottlambert/cosmo/releases/download/v1.0.0/cosmo
 chmod +x cosmo
 sudo mv cosmo /usr/local/bin/
 ```
