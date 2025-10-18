@@ -6,7 +6,7 @@ pub fn cli() -> Command {
         .about("Cosmology Calculator CLI")
         .version("0.1.0")
         .author("Trytan Lambert")
-
+        .subcommand_required(true)
         .subcommand(
     Command::new("all")
                 .about("Print out a summary of values for the given redshift.")

@@ -45,6 +45,7 @@ fn parse_cosmo_parameters(matches: &ArgMatches) -> Cosmology {
     }
 }
 
+
 fn main() {
     let matches = cli().get_matches();
 
@@ -128,9 +129,9 @@ fn main() {
             let value = try_parse_string_to_f64(sub_matches.get_one::<String>("input").unwrap());
             let cosmo = parse_cosmo_parameters(sub_matches);
             if *sub_matches.get_one::<bool>("inverse").unwrap_or(&false) {
-                println!("redshift = {:?}", cosmo.inverse_codist(value));
+                println!("redshift: {:?}", format!("{}",cosmo.inverse_codist(value)).bold().green());
             } else {
-                println!("{:?} Mpc", cosmo.comoving_distance(value));
+                println!("{} Mpc", format!("{}",cosmo.comoving_distance(value)).bold().green());
             }
         }
 
@@ -138,9 +139,9 @@ fn main() {
             let value = try_parse_string_to_f64(sub_matches.get_one::<String>("input").unwrap());
             let cosmo = parse_cosmo_parameters(sub_matches);
             if *sub_matches.get_one::<bool>("inverse").unwrap_or(&false) {
-                println!("redshift = {}", cosmo.inverse_codist(value));
+                println!("redshift: {}", format!("{}", cosmo.inverse_codist(value)).bold().green());
             } else {
-                println!("{} Mpc", cosmo.luminosity_distance(value))
+                println!("{} Mpc", format!("{}", cosmo.luminosity_distance(value)).bold().green());
             }
         }
 
@@ -148,9 +149,9 @@ fn main() {
             let value = try_parse_string_to_f64(sub_matches.get_one::<String>("input").unwrap());
             let cosmo = parse_cosmo_parameters(sub_matches);
             if *sub_matches.get_one::<bool>("inverse").unwrap_or(&false) {
-                println!("redshift = {}", cosmo.inverse_covol(value * 1e9));
+                println!("redshift: {}", format!("{}", cosmo.inverse_covol(value * 1e9)).bold().green());
             } else {
-                println!("{} Gpc³", cosmo.comoving_volume(value) / 1e9);
+                println!("{} Gpc³", format!("{}", cosmo.comoving_volume(value) / 1e9).bold().green());
             }
         }
 
@@ -158,9 +159,9 @@ fn main() {
             let value = try_parse_string_to_f64(sub_matches.get_one::<String>("input").unwrap());
             let cosmo = parse_cosmo_parameters(sub_matches);
             if *sub_matches.get_one::<bool>("inverse").unwrap_or(&false) {
-                println!("redshift = {}", cosmo.inverse_lookback_time(value));
+                println!("redshift: {}", format!("{}", cosmo.inverse_lookback_time(value)).bold().green());
             } else {
-                println!("{} Gyr", cosmo.look_back_time(value));
+                println!("{} Gyr", format!("{}", cosmo.look_back_time(value)).bold().green());
             }
         }
 
@@ -168,16 +169,16 @@ fn main() {
             let value = try_parse_string_to_f64(sub_matches.get_one::<String>("input").unwrap());
             let cosmo = parse_cosmo_parameters(sub_matches);
             if *sub_matches.get_one::<bool>("inverse").unwrap_or(&false) {
-                println!("redshift = {}", cosmo.inverse_age(value));
+                println!("redshift: {}", format!("{}", cosmo.inverse_age(value)).bold().green());
             } else {
-                println!("{} Gyr", cosmo.age(value));
+                println!("{} Gyr", format!("{}", cosmo.age(value)).bold().green());
             }
         }
 
         Some(("distmod", sub_matches)) => {
-            let redshift = try_parse_string_to_f64(sub_matches.get_one::<String>("z").unwrap());
+            let redshift= try_parse_string_to_f64(sub_matches.get_one::<String>("z").unwrap());
             let cosmo = parse_cosmo_parameters(sub_matches);
-            println!("distance modulus = {}", cosmo.distance_modulus(redshift));
+            println!("distance modulus = {}", format!("{}", cosmo.distance_modulus(redshift)).bold().green());
         }
 
         Some(("angscale_phys", sub_matches)) => {
@@ -187,12 +188,12 @@ fn main() {
             if *sub_matches.get_one::<bool>("mpc").unwrap_or(&false) {
                 println!(
                     "Angular scale = {} pMpc/arcmin",
-                    cosmo.kpc_per_arcsecond_physical(redshift) * 60. / 1e3
+                    format!("{}", cosmo.kpc_per_arcsecond_physical(redshift) * 60. / 1e3).bold().green()
                 )
             } else {
                 println!(
                     "Angular scale = {} pkpc/arcsec",
-                    cosmo.kpc_per_arcsecond_physical(redshift)
+                    format!("{}", cosmo.kpc_per_arcsecond_physical(redshift)).bold().green()
                 )
             }
         }
@@ -204,12 +205,12 @@ fn main() {
             if *sub_matches.get_one::<bool>("mpc").unwrap_or(&false) {
                 println!(
                     "Angular scale = {} cMpc/arcmin",
-                    cosmo.kpc_per_arcsecond_comoving(redshift) * 60. / 1e3
+                    format!("{}", cosmo.kpc_per_arcsecond_comoving(redshift) * 60. / 1e3).bold().green()
                 )
             } else {
                 println!(
                     "Angular scale = {} ckpc/arcsec",
-                    cosmo.kpc_per_arcsecond_comoving(redshift)
+                    format!("{}", cosmo.kpc_per_arcsecond_comoving(redshift)).bold().green()
                 )
             }
         }
