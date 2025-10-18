@@ -138,7 +138,7 @@ The `-M` `--mpc-per-arcmin` flag can be used to return the value in units of mpc
 
 The binary for `cosmo` is only available on mac-os but will be made available on Linux soon.
 
-**Installing dog is very easy**
+**Installing cosmo is very easy**
 
 ```
 curl -L -o dog https://github.com/trystanscottlambert/cosmo/releases/download/v1.0.0/cosmo
