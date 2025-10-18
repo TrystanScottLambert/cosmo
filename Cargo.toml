@@ -5,4 +5,5 @@ edition = "2024"
 
 [dependencies]
 clap = "4.5.49"
+colored = "3.0.0"
 cosmoxide = "0.1.1"

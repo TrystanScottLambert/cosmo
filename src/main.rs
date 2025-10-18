@@ -1,11 +1,26 @@
+use std::fmt::format;
+
 use clap::{Arg, ArgAction, Command};
 use cosmoxide::Cosmology;
+use colored::Colorize;
 
 fn cli() -> Command {
     Command::new("cosmo")
         .about("Cosmology Calculator CLI")
         .version("0.1.0")
-        .subcommand_required(true)
+        .author("Trytan Lambert")
+
+        .subcommand(
+            Command::new("summary")
+         .about("Print out a summary of values for the given redshift.")
+         .aliases(["sum", "all"])
+         .arg(
+            Arg::new("z")
+            .required(true)
+            .index(1)
+            .help("Redshift.")
+         )   
+        )
         .subcommand(
             Command::new("codist")
                 .aliases(["co_dist", "comoving_distance", "CoDist"])
@@ -102,6 +117,20 @@ fn cli() -> Command {
                 .about("Distance modulus at a given redshift")
                 .arg(Arg::new("z").required(true).index(1).help("redshift")),
         )
+        .subcommand(
+            Command::new("angscale_phys")
+                .aliases(["angscale", "angular_scale", "angular_scale_physical", "angscale_physical"])
+                .about("The physical angular scale on sky in units of kpc/arcsec. (Default angular scale)")
+                .arg(Arg::new("z").required(true).index(1).help("redshift"))
+                .arg(Arg::new("mpc").long("mpc-per-arcmin").short('m').help("Return the angular scale in units of Mpc/arcmin").action(ArgAction::SetTrue))
+        )
+        .subcommand(
+            Command::new("angscale_co")
+                .aliases(["angular_scale_comoving", "angscale_comoving"])
+                .about("The co-moving angular scale on sky in units of kpc/arcsec.")
+                .arg(Arg::new("z").required(true).index(1).help("redshift"))
+                .arg(Arg::new("mpc").long("mpc-per-arcmin").short('m').help("Return the angular scale in units of Mpc/arcmin").action(ArgAction::SetTrue))
+        )
 }
 
 fn try_parse_string_to_f64(string: &String) -> f64 {
@@ -123,7 +152,33 @@ fn main() {
         h0: 70.,
     };
 
+
     match matches.subcommand() {
+
+        Some(("summary", sub_matches)) => {
+            let z = try_parse_string_to_f64(sub_matches.get_one::<String>("z").unwrap());
+            println!("Redshift (z): {}", z.to_string().bold().blue());
+            println!("Expansion factor (a): {}", format!("{:.4}",(1./(1. + z))).bold().blue());
+            println!();
+            println!("Comoving distance: {} Mpc", format!("{:.4}",cosmo.comoving_distance(z)).bold().blue());
+            println!("Luminosity distance: {} Mpc", format!("{:.4}",cosmo.luminosity_distance(z)).bold().blue());
+            println!("Angular diameter distance: {} Mpc", format!("{:.4}",cosmo.angular_diameter_distance(z)).bold().blue());
+            println!("Comoving transverse distance: {} Mpc", format!("{:.4}",cosmo.comoving_transverse_distance(z)).bold().blue());
+            println!("Distance Modulus: {} mag", format!("{:.4}",cosmo.distance_modulus(z)).bold().blue());
+            println!("Physical angular scale: {} kpc/arcsec", format!("{:.4}",cosmo.kpc_per_arcsecond_physical(z)).bold().blue());
+            println!("Comoving angular scale: {} kpc/arcsec", format!("{:.4}",cosmo.kpc_per_arcsecond_comoving(z)).bold().blue());
+            println!("Comoving Volume: {} Gpc^3", format!("{:.4}",(cosmo.comoving_volume(z)/1e9)).bold().blue());
+            println!();
+            println!("H(z): {}", format!("{:.4}",cosmo.h_at_z(z)).bold().blue());
+            println!("Expansion rate: {}", format!("{:.4}", cosmo.h_at_z(z)/(1.+z)).bold().blue());
+            println!();
+            println!("Age: {} Gyr", format!("{:.4}", cosmo.age(z)).bold().blue());
+            println!("Look back time: {} Gyr", format!("{:.4}", cosmo.look_back_time(z)).bold().blue());
+            println!("Universe Age Now: {} Gyr", format!("{:.4}", cosmo.age(0.)).bold().blue());
+            println!("Hubble Time: {} Gyr", format!("{:.4}", cosmo.hubble_time()).bold().blue());
+            
+        }
+
         Some(("codist", sub_matches)) => {
             let value = try_parse_string_to_f64(sub_matches.get_one::<String>("input").unwrap());
             if *sub_matches.get_one::<bool>("inverse").unwrap_or(&false) {
@@ -138,7 +193,7 @@ fn main() {
             if *sub_matches.get_one::<bool>("inverse").unwrap_or(&false) {
                 println!("redshift = {}", cosmo.inverse_codist(value));
             } else {
-                println!("{} Mpc", cosmo.comoving_distance(value))
+                println!("{} Mpc", cosmo.luminosity_distance(value))
             }
         }
 
@@ -172,6 +227,24 @@ fn main() {
         Some(("distmod", sub_matches)) => {
             let redshift = try_parse_string_to_f64(sub_matches.get_one::<String>("z").unwrap());
             println!("distance modulus = {}", cosmo.distance_modulus(redshift));
+        }
+
+        Some(("angscale_phys", sub_matches)) => {
+            let redshift: f64 = try_parse_string_to_f64(sub_matches.get_one::<String>("z").unwrap());
+            if *sub_matches.get_one::<bool>("mpc").unwrap_or(&false) {
+                println!("Angular scale = {} pMpc/arcmin", cosmo.kpc_per_arcsecond_physical(redshift) * 60./1e3)
+            } else {
+                println!("Angular scale = {} pkpc/arcsec",cosmo.kpc_per_arcsecond_physical(redshift))
+            }
+        }
+
+        Some(("angscale_co", sub_matches)) => {
+            let redshift: f64 = try_parse_string_to_f64(sub_matches.get_one::<String>("z").unwrap());
+            if *sub_matches.get_one::<bool>("mpc").unwrap_or(&false) {
+                println!("Angular scale = {} cMpc/arcmin", cosmo.kpc_per_arcsecond_comoving(redshift) * 60./1e3)
+            } else {
+                println!("Angular scale = {} ckpc/arcsec",cosmo.kpc_per_arcsecond_comoving(redshift))
+            }
         }
 
         _ => println!("Command not recognized"),
