@@ -141,7 +141,7 @@ The binary for `cosmo` is only available on mac-os but will be made available on
 **Installing cosmo is very easy**
 
 ```
-curl -L -o cosmo https://github.com/trystanscottlambert/cosmo/releases/download/v1.0.0/cosmo
+curl -L -o cosmo https://github.com/trystanscottlambert/cosmo/releases/download/v1.0.1/cosmo
 chmod +x cosmo
 sudo mv cosmo /usr/local/bin/
 ```

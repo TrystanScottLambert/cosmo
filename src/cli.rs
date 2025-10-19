@@ -4,7 +4,7 @@ use clap::{Arg, Command, ArgAction};
 pub fn cli() -> Command {
     Command::new("cosmo")
         .about("Cosmology Calculator CLI")
-        .version("0.1.0")
+        .version("1.0.1")
         .author("Trytan Lambert")
         .subcommand_required(true)
         .subcommand(
