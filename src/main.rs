@@ -10,7 +10,7 @@ fn try_parse_string_to_f64(string: &String) -> f64 {
     match string.parse::<f64>() {
         Ok(value) => value,
         Err(_) => {
-            println!("Value {:?} is not a valid number.", string);
+            println!("Value: {:?} is not a valid number.", string);
             std::process::exit(1)
         }
     }
@@ -129,7 +129,7 @@ fn main() {
             let value = try_parse_string_to_f64(sub_matches.get_one::<String>("input").unwrap());
             let cosmo = parse_cosmo_parameters(sub_matches);
             if *sub_matches.get_one::<bool>("inverse").unwrap_or(&false) {
-                println!("redshift: {:?}", format!("{}",cosmo.inverse_codist(value)).bold().green());
+                println!("redshift: {}", format!("{}",cosmo.inverse_codist(value)).bold().green());
             } else {
                 println!("{} Mpc", format!("{}",cosmo.comoving_distance(value)).bold().green());
             }
